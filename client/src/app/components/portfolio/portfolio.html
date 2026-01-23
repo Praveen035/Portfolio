@@ -1,0 +1,229 @@
+<div class="portfolio-section">
+    <div class="container">
+        <!-- Header -->
+        <div class="portfolio-header text-center">
+            <h1 class="section-title">
+                <i class="fas fa-briefcase me-3"></i>Project Portfolio
+            </h1>
+            <p class="section-subtitle">
+                Showcasing enterprise-grade applications and microservices architectures
+            </p>
+            <div class="header-stats">
+                <div class="stat-item">
+                    <span class="stat-number">{{ projects.length }}+</span>
+                    <span class="stat-label">Projects</span>
+                </div>
+                <div class="stat-divider"></div>
+                <div class="stat-item">
+                    <span class="stat-number">3</span>
+                    <span class="stat-label">Companies</span>
+                </div>
+                <div class="stat-divider"></div>
+                <div class="stat-item">
+                    <span class="stat-number">100K+</span>
+                    <span class="stat-label">Users Served</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Category Filters -->
+        <div class="filter-section">
+            <div class="filter-container">
+                <button *ngFor="let category of categories" class="filter-btn"
+                    [class.active]="selectedCategory === category" (click)="filterProjects(category)"
+                    [style.--category-color]="getCategoryColor(category)">
+                    <i [class]="getCategoryIcon(category) + ' me-2'"></i>
+                    <span>{{ category }}</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Featured Projects -->
+        <div class="featured-section" *ngIf="selectedCategory === 'All'">
+            <h2 class="featured-title">
+                <i class="fas fa-star me-2"></i>Featured Projects
+            </h2>
+            <div class="row g-4">
+                <div class="col-lg-6" *ngFor="let project of getFeaturedProjects(); let i = index">
+                    <div class="featured-card" [style.animation-delay.ms]="i * 150">
+                        <div class="featured-image-wrapper">
+                            <img [src]="project.image" [alt]="project.title" class="featured-image">
+                            <div class="featured-overlay">
+                                <div class="overlay-content">
+                                    <h3 class="overlay-title">{{ project.title }}</h3>
+                                    <p class="overlay-company">{{ project.client }}</p>
+                                </div>
+                            </div>
+                            <div class="featured-badge" *ngIf="project.featured">
+                                <i class="fas fa-star"></i> Featured
+                            </div>
+                        </div>
+
+                        <div class="featured-content">
+                            <div class="project-meta">
+                                <span class="meta-badge company">
+                                    <i class="fas fa-building me-2"></i>{{ project.company }}
+                                </span>
+                                <span class="meta-badge duration">
+                                    <i class="far fa-calendar me-2"></i>{{ project.duration }}
+                                </span>
+                            </div>
+
+                            <h4 class="project-title">{{ project.title }}</h4>
+                            <p class="project-description">{{ project.description }}</p>
+
+                            <!-- Stats -->
+                            <div class="project-stats" *ngIf="project.stats">
+                                <div class="stat-box">
+                                    <i class="fas fa-users"></i>
+                                    <div>
+                                        <span class="stat-value">{{ project.stats.users }}</span>
+                                        <span class="stat-text">Users</span>
+                                    </div>
+                                </div>
+                                <div class="stat-box">
+                                    <i class="fas fa-tachometer-alt"></i>
+                                    <div>
+                                        <span class="stat-value">{{ project.stats.performance }}</span>
+                                        <span class="stat-text">Faster</span>
+                                    </div>
+                                </div>
+                                <div class="stat-box">
+                                    <i class="fas fa-check-circle"></i>
+                                    <div>
+                                        <span class="stat-value">{{ project.stats.coverage }}</span>
+                                        <span class="stat-text">Coverage</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Key Achievements -->
+                            <div class="achievements">
+                                <h6 class="achievements-title">
+                                    <i class="fas fa-trophy me-2"></i>Key Achievements
+                                </h6>
+                                <ul class="achievements-list">
+                                    <li *ngFor="let achievement of project.achievements.slice(0, 3)">
+                                        <i class="fas fa-check me-2"></i>{{ achievement }}
+                                    </li>
+                                </ul>
+                            </div>
+
+                            <!-- Technologies -->
+                            <div class="tech-stack">
+                                <span class="tech-badge" *ngFor="let tech of project.technologies">
+                                    {{ tech }}
+                                </span>
+                            </div>
+
+                            <!-- Category Badge -->
+                            <div class="category-badge" [style.background]="getCategoryColor(project.category)">
+                                <i [class]="getCategoryIcon(project.category) + ' me-2'"></i>
+                                {{ project.category }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- All Projects Grid -->
+        <div class="projects-section">
+            <h2 class="projects-title" *ngIf="selectedCategory !== 'All'">
+                <i [class]="getCategoryIcon(selectedCategory) + ' me-2'"></i>
+                {{ selectedCategory }} Projects
+            </h2>
+            <h2 class="projects-title" *ngIf="selectedCategory === 'All'">
+                <i class="fas fa-th me-2"></i>All Projects
+            </h2>
+
+            <!-- Loading State -->
+            <div class="loading-state" *ngIf="loading">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+                <p>Loading projects...</p>
+            </div>
+
+            <!-- Projects Grid -->
+            <div class="row g-4" *ngIf="!loading">
+                <div class="col-lg-4 col-md-6" *ngFor="let project of filteredProjects; let i = index">
+                    <div class="project-card" [style.animation-delay.ms]="i * 100">
+                        <div class="card-image-wrapper">
+                            <img [src]="project.image" [alt]="project.title" class="card-image">
+                            <div class="image-overlay">
+                                <div class="overlay-icons">
+                                    <button class="icon-btn" title="View Details">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                    <button class="icon-btn" title="Quick Info">
+                                        <i class="fas fa-info-circle"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="card-category" [style.background]="getCategoryColor(project.category)">
+                                {{ project.category }}
+                            </div>
+                        </div>
+
+                        <div class="card-content">
+                            <div class="card-header-info">
+                                <h5 class="card-title">{{ project.title }}</h5>
+                                <p class="card-client">
+                                    <i class="fas fa-briefcase me-2"></i>{{ project.client }}
+                                </p>
+                            </div>
+
+                            <p class="card-description">{{ project.shortDescription }}</p>
+
+                            <div class="card-tech">
+                                <span class="tech-tag" *ngFor="let tech of project.technologies.slice(0, 4)">
+                                    {{ tech }}
+                                </span>
+                                <span class="tech-more" *ngIf="project.technologies.length > 4">
+                                    +{{ project.technologies.length - 4 }}
+                                </span>
+                            </div>
+
+                            <div class="card-footer-info">
+                                <div class="duration">
+                                    <i class="far fa-calendar me-2"></i>
+                                    <span>{{ project.duration }}</span>
+                                </div>
+                                <div class="achievements-count">
+                                    <i class="fas fa-trophy me-2"></i>
+                                    <span>{{ project.achievements.length }} achievements</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Empty State -->
+            <div class="empty-state" *ngIf="!loading && filteredProjects.length === 0">
+                <i class="fas fa-folder-open fa-5x"></i>
+                <h3>No projects found</h3>
+                <p>Try selecting a different category</p>
+            </div>
+        </div>
+
+        <!-- Call to Action -->
+        <div class="cta-box">
+            <div class="cta-content">
+                <h3 class="cta-title">Interested in Working Together?</h3>
+                <p class="cta-text">
+                    Let's discuss how I can help bring your next project to life with enterprise-grade solutions.
+                </p>
+                <div class="cta-actions">
+                    <a routerLink="/contact" class="btn btn-primary-cta">
+                        <i class="fas fa-envelope me-2"></i>Get In Touch
+                    </a>
+                    <a routerLink="/skills" class="btn btn-secondary-cta">
+                        <i class="fas fa-code me-2"></i>View Skills
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

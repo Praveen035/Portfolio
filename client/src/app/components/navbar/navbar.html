@@ -1,0 +1,73 @@
+<nav class="navbar navbar-expand-lg fixed-top" [class.scrolled]="isScrolled">
+    <div class="container">
+        <!-- Brand/Logo -->
+        <a class="navbar-brand" routerLink="/" (click)="closeNavbar()">
+            <div class="brand-wrapper">
+                <div class="brand-logo">
+                    <span class="initials">{{ initials }}</span>
+                </div>
+                <div class="brand-text">
+                    <span class="brand-name">{{ name }}</span>
+                    <span class="brand-tagline">.NET Full Stack Developer</span>
+                </div>
+            </div>
+        </a>
+
+        <!-- Mobile Toggle Button -->
+        <button class="navbar-toggler" type="button" (click)="toggleNavbar()" [attr.aria-expanded]="!isCollapsed"
+            aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon">
+                <i class="fas" [class.fa-bars]="isCollapsed" [class.fa-times]="!isCollapsed"></i>
+            </span>
+        </button>
+
+        <!-- Navigation Links -->
+        <div class="collapse navbar-collapse" [class.show]="!isCollapsed">
+            <ul class="navbar-nav mx-auto">
+                <li class="nav-item" *ngFor="let link of navLinks">
+                    <a class="nav-link" [routerLink]="link.path" routerLinkActive="active"
+                        [routerLinkActiveOptions]="{exact: link.path === '/'}" (click)="closeNavbar()">
+                        <i [class]="link.icon + ' me-2'"></i>
+                        <span>{{ link.label }}</span>
+                    </a>
+                </li>
+            </ul>
+
+            <!-- Right Side Actions -->
+            <div class="navbar-actions">
+                <!-- Social Links (Desktop) -->
+                <div class="social-links d-none d-lg-flex">
+                    <a *ngFor="let social of socialLinks" [href]="social.url" target="_blank" class="social-icon"
+                        [title]="social.label" [style.--social-color]="social.color">
+                        <i [class]="social.icon"></i>
+                    </a>
+                </div>
+
+                <!-- Download Resume Button -->
+                <button class="btn btn-download" (click)="downloadResume()">
+                    <i class="fas fa-download me-2"></i>
+                    <span class="d-none d-md-inline">Download</span>
+                    <span class="d-inline d-md-none">CV</span>
+                </button>
+
+                <!-- Hire Me Button -->
+                <a routerLink="/contact" class="btn btn-hire" (click)="closeNavbar()">
+                    <i class="fas fa-paper-plane me-2"></i>
+                    <span>Hire Me</span>
+                </a>
+            </div>
+
+            <!-- Social Links (Mobile) -->
+            <div class="social-links-mobile d-lg-none">
+                <a *ngFor="let social of socialLinks" [href]="social.url" target="_blank" class="social-icon-mobile"
+                    [title]="social.label">
+                    <i [class]="social.icon"></i>
+                    <span>{{ social.label }}</span>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Progress Bar -->
+    <div class="scroll-progress" [style.width.%]="(isScrolled ? 100 : 0)"></div>
+</nav>
