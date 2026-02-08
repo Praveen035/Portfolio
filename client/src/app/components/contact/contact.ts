@@ -4,7 +4,12 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { PortfolioService } from '../../services/portfolio.service';
 import { Contact } from '../../models/models';
-
+type ContactField = {
+  name: keyof Contact;
+  label: string;
+  icon: string;
+  type: 'text' | 'email' | 'textarea';
+};
 @Component({
   selector: 'app-contact',
   standalone: true,
@@ -28,8 +33,8 @@ export class ContactComponent {
     {
       icon: 'fas fa-envelope',
       title: 'Email',
-      value: 'praveenplus054@example.com',
-      link: 'mailto:your.email@example.com'
+      value: 'praveenslvp@outlook.com',
+      link: 'mailto:praveenslvp@outlook.com'
     },
     {
       icon: 'fas fa-phone',
@@ -52,6 +57,14 @@ export class ContactComponent {
     { icon: 'fab fa-instagram', url: 'https://instagram.com', label: 'Instagram' }
   ];
 
+  fields: ContactField[] = [
+    { name: 'name', label: 'Your Name *', icon: 'fas fa-user', type: 'text' },
+    { name: 'email', label: 'Email Address *', icon: 'fas fa-envelope', type: 'email' },
+    { name: 'subject', label: 'Subject *', icon: 'fas fa-tag', type: 'text' },
+    { name: 'message', label: 'Message *', icon: 'fas fa-comment', type: 'textarea' }
+  ];
+
+
   constructor(private portfolioService: PortfolioService) { }
 
   onSubmit(): void {
@@ -63,7 +76,8 @@ export class ContactComponent {
     this.error = '';
 
     this.portfolioService.sendContact(this.contact).subscribe({
-      next: () => {
+      next: (response) => {
+        console.log('Email sent successfully!', response);
         this.submitted = true;
         this.submitting = false;
         this.resetForm();
@@ -76,7 +90,7 @@ export class ContactComponent {
       error: (err) => {
         this.error = 'Failed to send message. Please try again.';
         this.submitting = false;
-        console.error(err);
+        console.error('Error sending email:', err);
       }
     });
   }

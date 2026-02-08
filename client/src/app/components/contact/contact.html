@@ -1,113 +1,93 @@
-<div class="contact-section">
-    <div class="container">
-        <h1 class="text-center mb-2 section-title">Get In Touch</h1>
-        <p class="text-center text-muted mb-5">Feel free to contact me for any inquiries or opportunities</p>
+<section class="contact-section container">
+    <div class="text-center mb-5">
+        <h1 class="section-title">Get In Touch</h1>
+        <p class="text-muted">
+            Feel free to contact me for any inquiries or opportunities
+        </p>
+    </div>
 
-        <div class="row justify-content-center">
-            <div class="col-lg-10">
-                <div class="row g-4">
-                    <!-- Contact Form -->
-                    <div class="col-lg-7">
-                        <!-- Success Alert -->
-                        <div *ngIf="submitted"
-                            class="alert alert-success alert-dismissible fade show animate-slide-down" role="alert">
-                            <i class="fas fa-check-circle me-2"></i>
-                            <strong>Success!</strong> Your message has been sent successfully. I'll get back to you
-                            soon!
-                            <button type="button" class="btn-close" (click)="submitted = false"></button>
-                        </div>
+    <div class="row g-4">
+        <!-- CONTACT FORM -->
+        <div class="col-lg-7">
 
-                        <!-- Error Alert -->
-                        <div *ngIf="error" class="alert alert-danger alert-dismissible fade show animate-slide-down"
-                            role="alert">
-                            <i class="fas fa-exclamation-circle me-2"></i>
-                            {{ error }}
-                            <button type="button" class="btn-close" (click)="error = ''"></button>
-                        </div>
+            <!-- Success Alert -->
+            <div *ngIf="submitted" class="alert alert-success alert-dismissible fade show">
+                <i class="fas fa-check-circle me-2"></i>
+                Message sent successfully!
+                <button type="button" class="btn-close" (click)="submitted=false"></button>
+            </div>
 
-                        <div class="contact-form-card">
-                            <form #contactForm="ngForm" (ngSubmit)="onSubmit()">
-                                <div class="mb-4">
-                                    <label for="name" class="form-label">
-                                        <i class="fas fa-user me-2"></i>Your Name *
-                                    </label>
-                                    <input type="text" class="form-control" id="name" [(ngModel)]="contact.name"
-                                        name="name" placeholder="Enter your name" required>
-                                </div>
+            <!-- Error Alert -->
+            <div *ngIf="error" class="alert alert-danger alert-dismissible fade show">
+                {{ error }}
+                <button type="button" class="btn-close" (click)="error=''"></button>
+            </div>
 
-                                <div class="mb-4">
-                                    <label for="email" class="form-label">
-                                        <i class="fas fa-envelope me-2"></i>Email Address *
-                                    </label>
-                                    <input type="email" class="form-control" id="email" [(ngModel)]="contact.email"
-                                        name="email" placeholder="Enter your email" required email>
-                                </div>
+            <form #contactForm="ngForm" (ngSubmit)="onSubmit()" class="card p-4 shadow-sm">
 
-                                <div class="mb-4">
-                                    <label for="subject" class="form-label">
-                                        <i class="fas fa-tag me-2"></i>Subject *
-                                    </label>
-                                    <input type="text" class="form-control" id="subject" [(ngModel)]="contact.subject"
-                                        name="subject" placeholder="What is this about?" required>
-                                </div>
+                <!-- Dynamic Fields -->
+                <div class="mb-3" *ngFor="let field of fields">
+                    <label class="form-label">
+                        <i [class]="field.icon + ' me-2'"></i>{{ field.label }}
+                    </label>
 
-                                <div class="mb-4">
-                                    <label for="message" class="form-label">
-                                        <i class="fas fa-comment me-2"></i>Message *
-                                    </label>
-                                    <textarea class="form-control" id="message" rows="6" [(ngModel)]="contact.message"
-                                        name="message" placeholder="Write your message here..." required></textarea>
-                                </div>
+                    <!-- Input -->
+                    <input *ngIf="field.type !== 'textarea'" [type]="field.type" class="form-control"
+                        [(ngModel)]="contact[field.name]" name="{{field.name}}" required />
 
-                                <button type="submit" class="btn btn-primary btn-lg w-100"
-                                    [disabled]="!contactForm.form.valid || submitting">
-                                    <span *ngIf="!submitting">
-                                        <i class="fas fa-paper-plane me-2"></i>Send Message
-                                    </span>
-                                    <span *ngIf="submitting">
-                                        <span class="spinner-border spinner-border-sm me-2" role="status"></span>
-                                        Sending...
-                                    </span>
-                                </button>
-                            </form>
-                        </div>
-                    </div>
+                    <!-- Textarea -->
+                    <textarea *ngIf="field.type === 'textarea'" class="form-control" rows="6"
+                        [(ngModel)]="contact[field.name]" name="{{field.name}}" required></textarea>
 
-                    <!-- Contact Info -->
-                    <div class="col-lg-5">
-                        <div class="contact-info-card mb-4">
-                            <h4 class="mb-4">
-                                <i class="fas fa-info-circle me-2"></i>Contact Information
-                            </h4>
-                            <div *ngFor="let info of contactInfo; let i = index" class="contact-info-item"
-                                [style.animation-delay.ms]="i * 100">
-                                <div class="icon-wrapper">
-                                    <i [class]="info.icon + ' fa-lg'"></i>
-                                </div>
-                                <div class="info-content">
-                                    <h6 class="mb-1">{{ info.title }}</h6>
-                                    <a *ngIf="info.link" [href]="info.link" class="info-link">{{ info.value }}</a>
-                                    <p *ngIf="!info.link" class="mb-0">{{ info.value }}</p>
-                                </div>
-                            </div>
-                        </div>
+                    <!-- Validation Message -->
+                    <small class="text-danger" *ngIf="contactForm.controls[field.name]?.invalid
+                        && contactForm.controls[field.name]?.touched">
+                        {{ field.label }} is required
+                    </small>
+                </div>
 
-                        <div class="social-card">
-                            <h4 class="mb-4">
-                                <i class="fas fa-share-alt me-2"></i>Connect With Me
-                            </h4>
-                            <div class="social-links">
-                                <a *ngFor="let social of socialLinks; let i = index" [href]="social.url" target="_blank"
-                                    class="social-icon"
-                                    [style.animation-delay.ms]="(contactInfo.length * 100) + (i * 50)"
-                                    [title]="social.label">
-                                    <i [class]="social.icon"></i>
-                                </a>
-                            </div>
-                        </div>
+                <!-- Submit Button -->
+                <button type="submit" class="btn btn-primary w-100 mt-3" [disabled]="contactForm.invalid || submitting">
+
+                    <span *ngIf="!submitting">
+                        <i class="fas fa-paper-plane me-2"></i>Send Message
+                    </span>
+
+                    <span *ngIf="submitting" class="spinner-border spinner-border-sm"></span>
+                </button>
+            </form>
+        </div>
+
+        <!-- CONTACT INFO -->
+        <div class="col-lg-5">
+
+            <div class="card p-4 shadow-sm mb-4">
+                <h5 class="mb-3">
+                    <i class="fas fa-info-circle me-2"></i>Contact Info
+                </h5>
+
+                <div *ngFor="let info of contactInfo" class="d-flex align-items-start mb-3">
+                    <i [class]="info.icon + ' me-3 mt-1'"></i>
+                    <div>
+                        <div class="fw-semibold">{{ info.title }}</div>
+                        <a *ngIf="info.link" [href]="info.link">{{ info.value }}</a>
+                        <div *ngIf="!info.link">{{ info.value }}</div>
                     </div>
                 </div>
             </div>
+
+            <div class="card p-4 shadow-sm">
+                <h5 class="mb-3">
+                    <i class="fas fa-share-alt me-2"></i>Social
+                </h5>
+
+                <div class="d-flex gap-3">
+                    <a *ngFor="let s of socialLinks" [href]="s.url" target="_blank">
+                        <i [class]="s.icon + ' fa-lg'"></i>
+                    </a>
+                </div>
+            </div>
+
         </div>
     </div>
-</div>
+</section>
