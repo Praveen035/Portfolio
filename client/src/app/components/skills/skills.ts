@@ -115,13 +115,18 @@ export class SkillsComponent implements OnInit {
       name: 'Microsoft Certified: Azure Developer Associate',
       code: 'AZ-204',
       icon: 'fab fa-microsoft',
-      color: '#0078d4'
+      color: '#0078d4',
+      issuer: 'Microsoft',
+      verificationUrl: 'https://learn.microsoft.com/en-us/users/praveenk-9809/credentials/77e4c9ee64b67827',
+      credentialId: '77e4c9ee64b67827',
+      date: 'Active'
     },
     {
       name: 'Angular Fundamentals',
       provider: 'Pluralsight',
       icon: 'fas fa-graduation-cap',
-      color: '#f05138'
+      color: '#f05138',
+      date: 'Completed'
     }
   ];
 
