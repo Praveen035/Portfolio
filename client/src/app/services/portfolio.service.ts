@@ -1,13 +1,20 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, from } from 'rxjs';
+import emailjs from '@emailjs/browser';
 import { Portfolio, Skill, Contact } from '../models/models';
 
 @Injectable({
   providedIn: 'root'
 })
 export class PortfolioService {
-  private apiUrl = 'https://localhost:7001/api'; // Update with your API URL
+  private apiUrl = 'https://localhost:7001/api';
+
+  private emailJsConfig = {
+    serviceId: 'service_0qwaj4c',
+    templateId: 'template_8sfcokd',
+    publicKey: 'fRJ0qGl2vUR8xsN4J'
+  };
 
   constructor(private http: HttpClient) { }
 
@@ -37,8 +44,30 @@ export class PortfolioService {
     return this.http.get<Skill[]>(`${this.apiUrl}/skills`);
   }
 
-  // Contact Methods
+  // Contact Method - Now uses EmailJS instead of backend API
   sendContact(contact: Contact): Observable<any> {
-    return this.http.post(`${this.apiUrl}/contact`, contact);
+    const templateParams = {
+      from_name: contact.name,
+      from_email: contact.email,
+      subject: contact.subject,
+      message: contact.message,
+      current_date: new Date().toLocaleString('en-IN', {
+        timeZone: 'Asia/Kolkata',
+        dateStyle: 'full',
+        timeStyle: 'short'
+      })
+    };
+
+    console.log('Sending email via EmailJS with params:', templateParams);
+
+    // Convert EmailJS promise to Observable for consistency with your component
+    return from(
+      emailjs.send(
+        this.emailJsConfig.serviceId,
+        this.emailJsConfig.templateId,
+        templateParams,
+        this.emailJsConfig.publicKey
+      )
+    );
   }
 }
